@@ -28,7 +28,7 @@
 <meta name="twitter:card" content="summary">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,gh/nexmoe/nexmoe.github.io@latest/lib/mdui_043tiny/css/mdui.css,gh/nexmoe/nexmoe.github.io@latest/lib/iconfont/iconfont.css?v=233" crossorigin>
   
-  <link rel="stylesheet" href="/blog.github.io/css/style.css?v=1602482755062">
+  <link rel="stylesheet" href="/blog.github.io/css/style.css?v=1603297455522">
 <meta name="generator" content="Hexo 5.1.0"></head>
 
 <body class="mdui-drawer-body-left">
@@ -180,11 +180,24 @@
 
 <h2 id="安装MySQL"><a href="#安装MySQL" class="headerlink" title="安装MySQL"></a>安装MySQL</h2><ol>
 <li><p>拉取镜像</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker pull mysql8-xtrabackup:1.0.0</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell">docker pull mysql8-xtrabackup:1.0.0<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p style="color: #909090;font-size: 12px;">注：mysql8-xtrabackup镜像为自己构建的镜像</p>
 </li>
 <li><p>启动容器</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">创建目录</span></span><br><span class="line">mkdir -p /home/lemon/mysql8/conf</span><br><span class="line">mkdir -p /home/lemon/mysql8/log</span><br><span class="line">mkdir -p /home/lemon/mysql8/data</span><br><span class="line">mkdir -p /home/lemon/backup</span><br><span class="line"><span class="meta">#</span><span class="bash">启动mysql</span></span><br><span class="line">docker run -p 3306:3306 --name lemon-mysql8 \</span><br><span class="line">    -v /home/lemon/mysql8/conf:/etc/mysql/conf.d \</span><br><span class="line">    -v /home/lemon/mysql8/log:/var/log/mysql \</span><br><span class="line">    -v /home/lemon/mysql8/data:/var/lib/mysql \</span><br><span class="line">    -v /home/lemon/backup:/var/mysql/backup \</span><br><span class="line">    -v /etc/localtime:/etc/localtime:ro \</span><br><span class="line">    -e MYSQL_ROOT_PASSWORD=1qazse4 -d mysql8-xtrabackup:1.0.0 \</span><br><span class="line">    --lower_case_table_names=1 --skip-name-resolve</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell">#创建目录
+mkdir -p /home/lemon/mysql8/conf
+mkdir -p /home/lemon/mysql8/log
+mkdir -p /home/lemon/mysql8/data
+mkdir -p /home/lemon/backup
+#启动mysql
+docker run -p 3306:3306 --name lemon-mysql8 \
+ -v /home/lemon/mysql8/conf:/etc/mysql/conf.d \
+ -v /home/lemon/mysql8/log:/var/log/mysql \
+ -v /home/lemon/mysql8/data:/var/lib/mysql \
+ -v /home/lemon/backup:/var/mysql/backup \
+ -v /etc/localtime:/etc/localtime:ro \
+ -e MYSQL_ROOT_PASSWORD=1qazse4 -d mysql8-xtrabackup:1.0.0 \
+ --lower_case_table_names=1 --skip-name-resolve<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p style="color: #909090;font-size: 12px;">
 注：/home/lemon/backup:/var/mysql/backup 备份文件存放位置
 </p>
@@ -192,35 +205,45 @@
 </li>
 </ol>
 <h2 id="全量"><a href="#全量" class="headerlink" title="全量"></a>全量</h2><h3 id="备份"><a href="#备份" class="headerlink" title="备份"></a>备份</h3><ol>
-<li>进入容器<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker exec -it lemon-mysql8 /bin/bash  或者docker exec -it -u root lemon-mysql8 /bin/bash</span><br></pre></td></tr></table></figure></li>
-<li>备份命令<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xtrabackup \</span><br><span class="line">	--user=root \</span><br><span class="line">	--port=3306 \</span><br><span class="line">	--password=1qazse4 \</span><br><span class="line">	--backup \</span><br><span class="line">	--target-dir=/var/mysql/backup/all \</span><br><span class="line">	--datadir=/var/lib/mysql</span><br></pre></td></tr></table></figure>
+<li>进入容器<pre class="line-numbers language-shell"><code class="language-shell">docker exec -it lemon-mysql8 /bin/bash  或者docker exec -it -u root lemon-mysql8 /bin/bash<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li>备份命令<pre class="line-numbers language-shell"><code class="language-shell">xtrabackup \
+--user=root \
+--port=3306 \
+--password=1qazse4 \
+--backup \
+--target-dir=/var/mysql/backup/all \
+--datadir=/var/lib/mysql<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p style="color: #909090;font-size: 12px;">注：target-dir： 备份文件存放位置; datadir： mysql的data地址</p>
 
 </li>
 </ol>
 <h3 id="恢复"><a href="#恢复" class="headerlink" title="恢复"></a>恢复</h3><ol>
 <li><p>先执行prepare才能进行恢复</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xtrabackup --prepare --target-dir=/var/mysql/backup/all</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell">xtrabackup --prepare --target-dir=/var/mysql/backup/all<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p style="color: #909090;font-size: 12px;">
 注：一般情况下,在备份完成后，数据尚且不能用于恢复操作，因为备份的数据中可能会包含尚未提交的事务或已经提交但尚未同步至数据文件中的事务。因此，此时数据 文件仍处理不一致状态。
 </p>
 </li>
 <li><p>删除目标数据库data下的所有文件</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">rm -rf /var/lib/mysql/*</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell">rm -rf /var/lib/mysql/*<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p style="color: #909090;font-size: 12px;">
 注：如果不请空，会恢复失败，提醒Original data directory /var/lib/mysql is not empty!
 </p>
 </li>
 <li><p>将数据拷贝到目标数据库目录下</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xtrabackup --copy-back --target-dir=/var/mysql/backup/all --datadir=/var/lib/mysql</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell">xtrabackup --copy-back --target-dir=/var/mysql/backup/all --datadir=/var/lib/mysql<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>重启MySQL</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker restart lemon-mysql8</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-shell"><code class="language-shell">docker restart lemon-mysql8<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 </ol>
 <h2 id="增量"><a href="#增量" class="headerlink" title="增量"></a>增量</h2><h3 id="备份-1"><a href="#备份-1" class="headerlink" title="备份"></a>备份</h3><ol>
-<li>命令<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xtrabackup \</span><br><span class="line">    --host=192.168.0.151 --user=root --port=3306 --password=1qazse4 \</span><br><span class="line">    --backup \</span><br><span class="line">    --target-dir=/var/mysql/backup/incremental \</span><br><span class="line">    --incremental-basedir=/var/mysql/backup/all</span><br></pre></td></tr></table></figure>
+<li>命令<pre class="line-numbers language-shell"><code class="language-shell">xtrabackup \
+ --host=192.168.0.151 --user=root --port=3306 --password=1qazse4 \
+ --backup \
+ --target-dir=/var/mysql/backup/incremental \
+ --incremental-basedir=/var/mysql/backup/all<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p style="color: #909090;font-size: 12px;">
 注：target-dir：增量备份地址
 incremental-basedir：上一次全量备份地址
@@ -230,31 +253,43 @@ incremental-basedir：上一次全量备份地址
 </ol>
 <h3 id="恢复-1"><a href="#恢复-1" class="headerlink" title="恢复"></a>恢复</h3><ol>
 <li><p>准备上一次全量备份，需要执行–prepare，防止回滚阶段</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xtrabackup --prepare --apply-log-only --target-dir=/var/mysql/backup/all</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell">xtrabackup --prepare --apply-log-only --target-dir=/var/mysql/backup/all<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>还原第一个增量备份</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xtrabackup --prepare --apply-log-only --target-dir=/var/mysql/backup/all \</span><br><span class="line">    --incremental-dir=/var/mysql/backup/incremental</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell">xtrabackup --prepare --apply-log-only --target-dir=/var/mysql/backup/all \
+--incremental-dir=/var/mysql/backup/incremental<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 </li>
 <li><p>还原最后一个增量备份</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xtrabackup --prepare --target-dir=/var/mysql/backup/all \</span><br><span class="line">    --incremental-dir=/var/mysql/backup/incremental</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell">xtrabackup --prepare --target-dir=/var/mysql/backup/all \
+--incremental-dir=/var/mysql/backup/incremental<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p style="color: #909090;font-size: 12px;">
 注：--apply-log-only除最后一个以外的所有增量应使用
 </p>
 </li>
 <li><p>删除目标数据库data下的所有文件</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">rm -rf /var/lib/mysql/*</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell">rm -rf /var/lib/mysql/*<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>恢复（同全量备份恢复）</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xtrabackup --copy-back --target-dir=/var/mysql/backup/all --datadir=/var/lib/mysql</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell">xtrabackup --copy-back --target-dir=/var/mysql/backup/all --datadir=/var/lib/mysql<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>重启MySQL</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker restart lemon-mysql8</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-shell"><code class="language-shell">docker restart lemon-mysql8<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 </ol>
 <h2 id="自动备份脚本"><a href="#自动备份脚本" class="headerlink" title="自动备份脚本"></a>自动备份脚本</h2><h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><ol>
-<li>backup.cnf<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">mysql配置信息</span></span><br><span class="line">mysql_host=</span><br><span class="line">mysql_port=3306</span><br><span class="line">mysql_user=root</span><br><span class="line">mysql_password=hunanhuamei123</span><br><span class="line"><span class="meta">#</span><span class="bash">数据库data目录</span></span><br><span class="line">mysql_data_path=/var/lib/mysql</span><br><span class="line"><span class="meta">#</span><span class="bash">全量备份数据存放目录</span></span><br><span class="line">full_backup_path=/var/mysql/backup/full/</span><br><span class="line"><span class="meta">#</span><span class="bash">最后一次全量备份坐标文件名称</span></span><br><span class="line">full_back_last_index_file=last.pid</span><br><span class="line"><span class="meta">#</span><span class="bash">增量备份数据存放目录</span></span><br><span class="line">inc_backup_path=/var/mysql/backup/inc/</span><br></pre></td></tr></table></figure>
-
+<li>backup.cnf<pre class="line-numbers language-shell"><code class="language-shell">#mysql配置信息
+mysql_host=
+mysql_port=3306
+mysql_user=root
+mysql_password=hunanhuamei123
+#数据库data目录
+mysql_data_path=/var/lib/mysql
+#全量备份数据存放目录
+full_backup_path=/var/mysql/backup/full/
+#最后一次全量备份坐标文件名称
+full_back_last_index_file=last.pid
+#增量备份数据存放目录
+inc_backup_path=/var/mysql/backup/inc/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 </ol>
 <h3 id="全量备份脚本"><a href="#全量备份脚本" class="headerlink" title="全量备份脚本"></a>全量备份脚本</h3><ol>
@@ -265,7 +300,7 @@ incremental-basedir：上一次全量备份地址
 </ol>
 <h3 id="全量备份定时任务"><a href="#全量备份定时任务" class="headerlink" title="全量备份定时任务"></a>全量备份定时任务</h3><ol>
 <li><p>auto_full_backup.sh全量备份定时任务脚本</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker exec -i -u root lemon-mysql8 /bin/bash -c &quot;cd /var/mysql/backup &amp;&amp; ./full_backup.sh&quot;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell">docker exec -i -u root lemon-mysql8 /bin/bash -c "cd /var/mysql/backup && ./full_backup.sh"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p style="color: #909090;font-size: 12px;">
 注：docker exec -i （去掉-t）因为-t是指分配一个伪终端。这里不需要分配伪终端。
 </p>
@@ -286,7 +321,7 @@ incremental-basedir：上一次全量备份地址
 </ol>
 <h3 id="增量备份定时任务"><a href="#增量备份定时任务" class="headerlink" title="增量备份定时任务"></a>增量备份定时任务</h3><ol>
 <li><p>auto_inc_backup.sh增量备份定时任务脚本</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker exec -i -u root lemon-mysql8 /bin/bash -c &quot;cd /var/mysql/backup &amp;&amp; ./inc_backup.sh&quot;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell">docker exec -i -u root lemon-mysql8 /bin/bash -c "cd /var/mysql/backup && ./inc_backup.sh"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>定时任务<br>每天的23:00点执行增量备份：0 23 * * * /home/auto_full_backup.sh</p>
 <p style="color: #909090;font-size: 12px;">
@@ -338,12 +373,12 @@ incremental-basedir：上一次全量备份地址
 </div>
     </div>
   </div>
-  <!--<script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,gh/highlightjs/cdn-release@9.15.8/build/highlight.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>-->
-<!--<script >hljs.initHighlightingOnLoad();</script>-->
+  <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,gh/highlightjs/cdn-release@10.3.1/build/highlight.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script >hljs.initHighlightingOnLoad();</script>
 
 
 
-<script src="/blog.github.io/js/app.js?v=1602482755063"></script>
+<script src="/blog.github.io/js/app.js?v=1603297455523"></script>
   
 
 

@@ -26,7 +26,7 @@
 <meta name="twitter:card" content="summary">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,gh/nexmoe/nexmoe.github.io@latest/lib/mdui_043tiny/css/mdui.css,gh/nexmoe/nexmoe.github.io@latest/lib/iconfont/iconfont.css?v=233" crossorigin>
   
-  <link rel="stylesheet" href="/blog.github.io/css/style.css?v=1602482755065">
+  <link rel="stylesheet" href="/blog.github.io/css/style.css?v=1603297455524">
 <meta name="generator" content="Hexo 5.1.0"></head>
 
 <body class="mdui-drawer-body-left">
@@ -150,7 +150,7 @@
   
   <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
     <a><i class="nexmoefont icon-calendar-fill"></i>2020年08月19日</a>
-    <a><i class="nexmoefont icon-areachart"></i>255 字</a>
+    <a><i class="nexmoefont icon-areachart"></i>239 字</a>
     <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
 </div>
 
@@ -170,9 +170,30 @@
     <p style="color: #909090;font-style: italic">构建CentOs7+JDK7+Chrome的docker镜像</p>
 
 <a id="more"></a>
-<h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">基于centos7镜像</span></span><br><span class="line"><span class="meta">#</span><span class="bash">FROM alpine:latest</span></span><br><span class="line">FROM centos:centos7</span><br><span class="line"><span class="meta">#</span><span class="bash">作者、维护人的信息</span></span><br><span class="line">LABEL MAINTAINER chaohui.xiao &lt;1446646182@qq.com&gt;</span><br><span class="line">COPY google-chrome-stable_current_x86_64.rpm /usr/chrome/</span><br><span class="line"><span class="meta">#</span><span class="bash">jre8是jdk-8u241-linux-x64.tar.gz删减部分内容后的包</span></span><br><span class="line">ADD jre8.tar.gz /usr/java/jdk/</span><br><span class="line"><span class="meta">#</span><span class="bash"> ADD指令：拷贝文件并解压   COPY指令：拷贝文件</span></span><br><span class="line"><span class="meta">#</span><span class="bash">RUN yum -y install libappindicator-gtk3 &amp;&amp; yum -y install liberation-fonts</span></span><br><span class="line">RUN yum install -y redhat-lsb &amp;&amp; \</span><br><span class="line">	yum install -y libXScrnSaver* &amp;&amp; \</span><br><span class="line">	yum install -y libappindicator-gtk3 &amp;&amp; \</span><br><span class="line">	yum -y install -y liberation-fonts &amp;&amp; \</span><br><span class="line">	yum -y localinstall /usr/chrome/google-chrome-stable_current_x86_64.rpm &amp;&amp; \</span><br><span class="line">	yum -y install fontconfig</span><br><span class="line"><span class="meta">#</span><span class="bash">设置环境变量</span></span><br><span class="line">ENV JAVA_TOOL_OPTIONS -Dfile.encoding=UTF-8</span><br><span class="line">ENV JAVA_HOME /usr/java/jdk/jre1.8.0_231/</span><br><span class="line">ENV PATH $&#123;PATH&#125;:$&#123;JAVA_HOME&#125;/bin</span><br><span class="line">ENV CLASSPATH $&#123;CLASSPATH&#125;:$&#123;JAVA_HOME&#125;/lib/rt.jar:$&#123;JAVA_HOME&#125;/lib/dt.jar:$&#123;JAVA_HOME&#125;/lib/tools.jar</span><br><span class="line"><span class="meta">#</span><span class="bash"> 这里无实际意义，只是在容器启动时，输出jre版本信息，验证是否安装成功</span></span><br><span class="line">CMD [&quot;java&quot;,&quot;-version&quot;]</span><br></pre></td></tr></table></figure>
-
-<h2 id="构建镜像"><a href="#构建镜像" class="headerlink" title="构建镜像"></a>构建镜像</h2><pre><code class="shell">docker build -t lemon/centos7-jdk8-chrome .</code></pre>
+<h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><pre class="line-numbers language-shell"><code class="language-shell">#基于centos7镜像
+#FROM alpine:latest
+FROM centos:centos7
+#作者、维护人的信息
+LABEL MAINTAINER chaohui.xiao <1446646182@qq.com>
+COPY google-chrome-stable_current_x86_64.rpm /usr/chrome/
+#jre8是jdk-8u241-linux-x64.tar.gz删减部分内容后的包
+ADD jre8.tar.gz /usr/java/jdk/
+# ADD指令：拷贝文件并解压   COPY指令：拷贝文件
+#RUN yum -y install libappindicator-gtk3 && yum -y install liberation-fonts
+RUN yum install -y redhat-lsb && \
+    yum install -y libXScrnSaver* && \
+    yum install -y libappindicator-gtk3 && \
+    yum -y install -y liberation-fonts && \
+    yum -y localinstall /usr/chrome/google-chrome-stable_current_x86_64.rpm && \
+    yum -y install fontconfig
+#设置环境变量
+ENV JAVA_TOOL_OPTIONS -Dfile.encoding=UTF-8
+ENV JAVA_HOME /usr/java/jdk/jre1.8.0_231/
+ENV PATH $&#123;PATH&#125;:$&#123;JAVA_HOME&#125;/bin
+ENV CLASSPATH $&#123;CLASSPATH&#125;:$&#123;JAVA_HOME&#125;/lib/rt.jar:$&#123;JAVA_HOME&#125;/lib/dt.jar:$&#123;JAVA_HOME&#125;/lib/tools.jar
+# 这里无实际意义，只是在容器启动时，输出jre版本信息，验证是否安装成功
+CMD ["java","-version"]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="构建镜像"><a href="#构建镜像" class="headerlink" title="构建镜像"></a>构建镜像</h2><pre class="line-numbers language-shell"><code class="language-shell">docker build -t lemon/centos7-jdk8-chrome .<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><ol start="2">
 <li>google-chrome-stable_current_x86_64.rpm(链接: <a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1ZCj-th5ygl_V9NQ-Z1syzg">https://pan.baidu.com/s/1ZCj-th5ygl_V9NQ-Z1syzg</a>  密码: cha0)</li>
 </ol>
@@ -214,12 +235,12 @@
 </div>
     </div>
   </div>
-  <!--<script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,gh/highlightjs/cdn-release@9.15.8/build/highlight.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>-->
-<!--<script >hljs.initHighlightingOnLoad();</script>-->
+  <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,gh/highlightjs/cdn-release@10.3.1/build/highlight.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script >hljs.initHighlightingOnLoad();</script>
 
 
 
-<script src="/blog.github.io/js/app.js?v=1602482755065"></script>
+<script src="/blog.github.io/js/app.js?v=1603297455524"></script>
   
 
 

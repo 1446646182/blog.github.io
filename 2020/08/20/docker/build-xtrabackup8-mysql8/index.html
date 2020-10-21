@@ -28,7 +28,7 @@
 <meta name="twitter:card" content="summary">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,gh/nexmoe/nexmoe.github.io@latest/lib/mdui_043tiny/css/mdui.css,gh/nexmoe/nexmoe.github.io@latest/lib/iconfont/iconfont.css?v=233" crossorigin>
   
-  <link rel="stylesheet" href="/blog.github.io/css/style.css?v=1602482755063">
+  <link rel="stylesheet" href="/blog.github.io/css/style.css?v=1603297455523">
 <meta name="generator" content="Hexo 5.1.0"></head>
 
 <body class="mdui-drawer-body-left">
@@ -152,7 +152,7 @@
   
   <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
     <a><i class="nexmoefont icon-calendar-fill"></i>2020年08月20日</a>
-    <a><i class="nexmoefont icon-areachart"></i>136 字</a>
+    <a><i class="nexmoefont icon-areachart"></i>126 字</a>
     <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
 </div>
 
@@ -172,9 +172,18 @@
     <p style="color: #909090;font-style: italic">构建MySQL8+Xtrabackup8的docker镜像</p>
 
 <a id="more"></a>
-<h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">基于MYSQL</span></span><br><span class="line">FROM mysql:8.0.19</span><br><span class="line"><span class="meta">#</span><span class="bash">作者、维护人的信息</span></span><br><span class="line">LABEL MAINTAINER chaohui.xiao &lt;1446646182@qq.com&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> ADD指令：拷贝文件并解压   COPY指令：拷贝文件</span></span><br><span class="line">COPY percona-xtrabackup-80_8.0.13-1.bionic_amd64.deb /usr/xtrabackup/</span><br><span class="line"><span class="meta">#</span><span class="bash">var/mysql/backup 保存备份文件的目录</span></span><br><span class="line">RUN apt-get update -y &amp;&amp; \</span><br><span class="line">    apt-get install -y apt-utils &amp;&amp; \</span><br><span class="line">    apt-get install -y /usr/xtrabackup/percona-xtrabackup-80_8.0.13-1.bionic_amd64.deb &amp;&amp; \</span><br><span class="line">    mkdir -p var/mysql/backup</span><br></pre></td></tr></table></figure>
-
-<h2 id="构建镜像"><a href="#构建镜像" class="headerlink" title="构建镜像"></a>构建镜像</h2><pre><code class="shell">docker build -t mysql8-xtrabackup:1.0.0 .</code></pre>
+<h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><pre class="line-numbers language-shell"><code class="language-shell">#基于MYSQL
+FROM mysql:8.0.19
+#作者、维护人的信息
+LABEL MAINTAINER chaohui.xiao <1446646182@qq.com>
+# ADD指令：拷贝文件并解压   COPY指令：拷贝文件
+COPY percona-xtrabackup-80_8.0.13-1.bionic_amd64.deb /usr/xtrabackup/
+#var/mysql/backup 保存备份文件的目录
+RUN apt-get update -y && \
+    apt-get install -y apt-utils && \
+    apt-get install -y /usr/xtrabackup/percona-xtrabackup-80_8.0.13-1.bionic_amd64.deb && \
+    mkdir -p var/mysql/backup<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="构建镜像"><a href="#构建镜像" class="headerlink" title="构建镜像"></a>构建镜像</h2><pre class="line-numbers language-shell"><code class="language-shell">docker build -t mysql8-xtrabackup:1.0.0 .<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><ol>
 <li><a target="_blank" rel="noopener" href="https://www.percona.com/downloads/Percona-XtraBackup-LATEST" title="官网下载">官网下载</a></li>
 <li><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/1446646182/lemon.github.io/blog/files/percona-xtrabackup-80_8.0.13-1.bionic_amd64.deb" title="percona-xtrabackup-80_8.0.13-1.bionic_amd64.deb下载">percona-xtrabackup-80_8.0.13-1.bionic_amd64.deb下载</a></li>
@@ -217,12 +226,12 @@
 </div>
     </div>
   </div>
-  <!--<script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,gh/highlightjs/cdn-release@9.15.8/build/highlight.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>-->
-<!--<script >hljs.initHighlightingOnLoad();</script>-->
+  <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,gh/highlightjs/cdn-release@10.3.1/build/highlight.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script >hljs.initHighlightingOnLoad();</script>
 
 
 
-<script src="/blog.github.io/js/app.js?v=1602482755064"></script>
+<script src="/blog.github.io/js/app.js?v=1603297455524"></script>
   
 
 

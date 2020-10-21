@@ -20,13 +20,13 @@
 <meta property="og:description" content="Java常用日期操作">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-08-25T12:00:00.000Z">
-<meta property="article:modified_time" content="2020-10-12T02:12:14.882Z">
+<meta property="article:modified_time" content="2020-10-21T16:23:07.661Z">
 <meta property="article:author" content="lemon">
 <meta property="article:tag" content="日期">
 <meta name="twitter:card" content="summary">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,gh/nexmoe/nexmoe.github.io@latest/lib/mdui_043tiny/css/mdui.css,gh/nexmoe/nexmoe.github.io@latest/lib/iconfont/iconfont.css?v=233" crossorigin>
   
-  <link rel="stylesheet" href="/blog.github.io/css/style.css?v=1602482755055">
+  <link rel="stylesheet" href="/blog.github.io/css/style.css?v=1603297455520">
 <meta name="generator" content="Hexo 5.1.0"></head>
 
 <body class="mdui-drawer-body-left">
@@ -150,7 +150,7 @@
   
   <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
     <a><i class="nexmoefont icon-calendar-fill"></i>2020年08月25日</a>
-    <a><i class="nexmoefont icon-areachart"></i>182 字</a>
+    <a><i class="nexmoefont icon-areachart"></i>185 字</a>
     <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
 </div>
 
@@ -170,7 +170,45 @@
     <p style="color: #909090;font-style: italic">Java常用日期操作</p>
 
 <a id="more"></a>
-<h2 id="获取指定时间最大、最小"><a href="#获取指定时间最大、最小" class="headerlink" title="获取指定时间最大、最小"></a>获取指定时间最大、最小</h2><figure class="highlight html"><table><tr><td class="code"><pre><span class="line">public static final String Y_M_D_H_M_S = &quot;yyyy-MM-dd HH:mm:ss&quot;;</span><br><span class="line"></span><br><span class="line">   public static String getStartOfDayFormatStr(LocalDate date) &#123;</span><br><span class="line">	Instant localDateTime2Instant = date.atStartOfDay().toInstant(ZoneOffset.UTC);</span><br><span class="line">	return getStartOfDayFormatStr(localDateTime2Instant, Y_M_D_H_M_S);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static String getStartOfDayFormatStr(LocalDateTime date) &#123;</span><br><span class="line">	Instant localDateTime2Instant = date.atZone(ZoneId.systemDefault()).toInstant();</span><br><span class="line">	return getStartOfDayFormatStr(localDateTime2Instant, Y_M_D_H_M_S);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static String getStartOfDayFormatStr(Instant instant, String format) &#123;</span><br><span class="line">	LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).with(LocalTime.MIN);</span><br><span class="line">	Date from = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());</span><br><span class="line"></span><br><span class="line">	SimpleDateFormat sdf = new SimpleDateFormat(format);</span><br><span class="line">	return sdf.format(from);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static String getEndOfDayFormatStr(LocalDate date) &#123;</span><br><span class="line">	Instant localDateTime2Instant = date.atStartOfDay().toInstant(ZoneOffset.UTC);</span><br><span class="line">	return getEndOfDayFormatStr(localDateTime2Instant, Y_M_D_H_M_S);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static String getEndOfDayFormatStr(LocalDateTime date) &#123;</span><br><span class="line">	Instant localDateTime2Instant = date.atZone(ZoneId.systemDefault()).toInstant();</span><br><span class="line">	return getEndOfDayFormatStr(localDateTime2Instant, Y_M_D_H_M_S);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static String getEndOfDayFormatStr(Instant instant, String format) &#123;</span><br><span class="line">	LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).with(LocalTime.MAX);</span><br><span class="line">	Date from = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());</span><br><span class="line"></span><br><span class="line">	SimpleDateFormat sdf = new SimpleDateFormat(format);</span><br><span class="line">	return sdf.format(from);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="获取指定时间最大、最小"><a href="#获取指定时间最大、最小" class="headerlink" title="获取指定时间最大、最小"></a>获取指定时间最大、最小</h2><pre class="line-numbers language-Java"><code class="language-Java">public class DateUtils &#123;
+    public static final String Y_M_D_H_M_S = "yyyy-MM-dd HH:mm:ss";
+
+    public static String getStartOfDayFormatStr(LocalDate date) &#123;
+        Instant localDateTime2Instant = date.atStartOfDay().toInstant(ZoneOffset.UTC);
+        return getStartOfDayFormatStr(localDateTime2Instant, Y_M_D_H_M_S);
+    &#125;
+
+    public static String getStartOfDayFormatStr(LocalDateTime date) &#123;
+        Instant localDateTime2Instant = date.atZone(ZoneId.systemDefault()).toInstant();
+        return getStartOfDayFormatStr(localDateTime2Instant, Y_M_D_H_M_S);
+    &#125;
+
+    public static String getStartOfDayFormatStr(Instant instant, String format) &#123;
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).with(LocalTime.MIN);
+        Date from = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(from);
+    &#125;
+
+    public static String getEndOfDayFormatStr(LocalDate date) &#123;
+        Instant localDateTime2Instant = date.atStartOfDay().toInstant(ZoneOffset.UTC);
+        return getEndOfDayFormatStr(localDateTime2Instant, Y_M_D_H_M_S);
+    &#125;
+
+    public static String getEndOfDayFormatStr(LocalDateTime date) &#123;
+        Instant localDateTime2Instant = date.atZone(ZoneId.systemDefault()).toInstant();
+        return getEndOfDayFormatStr(localDateTime2Instant, Y_M_D_H_M_S);
+    &#125;
+
+    public static String getEndOfDayFormatStr(Instant instant, String format) &#123;
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).with(LocalTime.MAX);
+        Date from = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(from);
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
   </article>
 
@@ -209,12 +247,12 @@
 </div>
     </div>
   </div>
-  <!--<script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,gh/highlightjs/cdn-release@9.15.8/build/highlight.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>-->
-<!--<script >hljs.initHighlightingOnLoad();</script>-->
+  <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,gh/highlightjs/cdn-release@10.3.1/build/highlight.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script >hljs.initHighlightingOnLoad();</script>
 
 
 
-<script src="/blog.github.io/js/app.js?v=1602482755057"></script>
+<script src="/blog.github.io/js/app.js?v=1603297455521"></script>
   
 
 
