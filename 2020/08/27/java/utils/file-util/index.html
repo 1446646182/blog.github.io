@@ -20,13 +20,13 @@
 <meta property="og:description" content="Java常用文件操作">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-08-27T12:00:00.000Z">
-<meta property="article:modified_time" content="2020-10-22T14:44:16.205Z">
+<meta property="article:modified_time" content="2020-10-22T14:54:16.723Z">
 <meta property="article:author" content="lemon">
 <meta property="article:tag" content="工具类">
 <meta name="twitter:card" content="summary">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,gh/nexmoe/nexmoe.github.io@latest/lib/mdui_043tiny/css/mdui.css,gh/nexmoe/nexmoe.github.io@latest/lib/iconfont/iconfont.css?v=233" crossorigin>
   
-  <link rel="stylesheet" href="/blog.github.io/css/style.css?v=1603378236007">
+  <link rel="stylesheet" href="/blog.github.io/css/style.css?v=1603378482954">
 <meta name="generator" content="Hexo 5.1.0"></head>
 
 <body class="mdui-drawer-body-left">
@@ -150,7 +150,7 @@
   
   <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
     <a><i class="nexmoefont icon-calendar-fill"></i>2020年08月27日</a>
-    <a><i class="nexmoefont icon-areachart"></i>320 字</a>
+    <a><i class="nexmoefont icon-areachart"></i>297 字</a>
     <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
 </div>
 
@@ -221,7 +221,7 @@
 <h2 id="文件下载"><a href="#文件下载" class="headerlink" title="文件下载"></a>文件下载</h2><pre class="line-numbers language-Java"><code class="language-Java">import cn.hutool.core.io.FileUtil;
 
 public class ZipUtil &#123;
-    public ResponseEntity<Resource> download(InputStream inputStream) &#123;
+    public ResponseEntity<Resource> download(InputStream inputStream, String fileName) &#123;
         Resource resource = new InputStreamResource(inputStream);
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
@@ -229,7 +229,6 @@ public class ZipUtil &#123;
         // 避免空指针
         header = header == null ? "" : header.toUpperCase();
         HttpStatus status;
-        String fileName = UploadFile.getRealName();
         if (header.contains("MSIE") || header.contains("TRIDENT") || header.contains("EDGE")) &#123;
             fileName = UrlUtil.encodeURL(fileName, Charsets.UTF_8);
             status = HttpStatus.OK;
@@ -238,18 +237,12 @@ public class ZipUtil &#123;
             status = HttpStatus.CREATED;
         &#125;
         HttpHeaders headers = new HttpHeaders();
-        URLConnection urlConnection = null;
-        try &#123;
-            urlConnection = new URL(UploadFile.getRemotePath()).openConnection();
-        &#125; catch (IOException e) &#123;
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", fileName);
-        &#125;
+        headers.setContentDispositionFormData("attachment", fileName);
         String mimeType = FileUtil.getMimeType(fileName);
         headers.setContentType(MediaType.parseMediaType(mimeType));
         return new ResponseEntity<Resource>(resource, headers, status);
     &#125;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
   </article>
 
@@ -293,7 +286,7 @@ public class ZipUtil &#123;
 
 
 
-<script src="/blog.github.io/js/app.js?v=1603378236007"></script>
+<script src="/blog.github.io/js/app.js?v=1603378482955"></script>
   
 
 
